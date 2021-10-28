@@ -1,10 +1,10 @@
-package com.example.springstudy;
+package com.ssafy.community;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SpringStudyApplicationTests {
+class CommunityApplicationTests {
 
 	@Test
 	void contextLoads() {

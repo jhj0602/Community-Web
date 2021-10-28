@@ -1,13 +1,13 @@
-package com.example.springstudy;
+package com.ssafy.community;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringStudyApplication {
+public class CommunityApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringStudyApplication.class, args);
+		SpringApplication.run(CommunityApplication.class, args);
 	}
 
 }
