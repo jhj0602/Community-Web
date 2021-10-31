@@ -6,12 +6,12 @@ module.exports = {
     devServer: {
         proxy: {
             "/": {
-                target: "http://localhost:8080",
-                ws: true,
+                target      : "http://localhost:8080",
+                ws          : true,
                 changeOrigin: true
             }
         },
-        port: 9000
+        port : 9000
     },
     outputDir: path.resolve("__dirname", "../../main/resources/static"),
 };
