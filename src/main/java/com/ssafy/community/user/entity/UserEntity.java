@@ -2,6 +2,7 @@ package com.ssafy.community.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -25,6 +26,10 @@ public class UserEntity {
 
     @NotBlank(message = "비밀번호를 입력하세요.")
     private String password;
+
+    @NotBlank(message = "닉네임을 입력하세요.")
+    @Length(min = 2, max = 8, message = "2~8자리의 닉네임을 입력하세요.")
+    private String nickname;
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
