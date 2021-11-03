@@ -27,6 +27,9 @@ public class UserSignupDto {
     @Length(min = 8, max = 20, message = "8~20자리의 비밀번호를 입력하세요")
     private String passwordCheck;
 
+    @NotBlank(message = "닉네임을 입력하세요.")
+    @Length(min = 2, max = 8, message = "2~8자리의 닉네임을 입력하세요.")
+    private String nickname;
 
     public UserEntity toUserEntity() {
         validateSamePassword(password, passwordCheck);
@@ -34,6 +37,7 @@ public class UserSignupDto {
         UserEntity userEntity = UserEntity.builder()
                 .email(email)
                 .password(password)
+                .nickname(nickname)
                 .build();
         return userEntity;
     }

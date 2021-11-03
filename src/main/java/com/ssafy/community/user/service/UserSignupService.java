@@ -28,21 +28,22 @@ public class UserSignupService {
             throw new DuplicatedEmailException();
         }
 
-        UserEntity signupUserEntity = userSignupDto.toUserEntity();
-        UserEntity userEntity = UserEntity.builder()
-                .email(signupUserEntity.getEmail())
-                .password(passwordEncoder.encrypt(signupUserEntity.getPassword()))
-                .authorities(signupUserEntity.getAuthorities())
+        UserEntity signupUser = userSignupDto.toUserEntity();
+        UserEntity user = UserEntity.builder()
+                .email(signupUser.getEmail())
+                .password(passwordEncoder.encrypt(signupUser.getPassword()))
+                .nickname(signupUser.getNickname())
+                .authorities(signupUser.getAuthorities())
                 .build();
 
         Authority auth = authorityRepository.findById(2L).orElseThrow(Exception::new);
         UserAuthority userAuth = UserAuthority.builder()
-                .userEntity(userEntity)
+                .userEntity(user)
                 .auth(auth)
                 .build();
 
         userAuthorityRepository.save(userAuth);
-        return UserResponseDto.from(userRepository.save(userEntity));
+        return UserResponseDto.from(userRepository.save(user));
     }
 
     public boolean validateDuplicatedEmail(String email) {

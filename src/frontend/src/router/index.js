@@ -1,29 +1,59 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import store from "../store/modules/users";
 
-Vue.use(VueRouter)
-
+Vue.use(VueRouter);
+const Login = () => import("../views/user/Login.vue");
+const SignUp = () => import("../views/user/SignUp.vue");
+const EditUser = () => import("../views/user/EditUser.vue");
+const Mypage = () => import("../views/user/Mypage.vue");
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    name: "Home",
+    component: Home,
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
-]
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  {
+    path: "/singUp",
+    name: "SignUp",
+    component: SignUp,
+  },
+  {
+    path: "/user/edit",
+    name: "EditUser",
+    component: EditUser,
+    meta: { authRequired: true },
+  },
+  {
+    path: "/mypage",
+    name: "Mypage",
+    component: Mypage,
+    meta: {authRequired: true}
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+router.beforeEach(function (to, from, next) {
+  if (to.matched.some((routeInfo) => routeInfo.meta.authRequired)) {
+    if (store.state.jwt === null) {
+      window.alert("로그인이 필요합니다.");
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
+export default router;

@@ -43,19 +43,21 @@ public class UserManagementService {
     }
 
     public void update(UserUpdateDto userUpdateDto) {
-        UserEntity updateUserEntity = userUpdateDto.toUserEntity();
-        UserEntity originUserEntity = userRepository.findById(userUpdateDto.getId()).orElseThrow(NoUserFoundException::new);
-        UserEntity userEntity = UserEntity.builder()
-                .id(updateUserEntity.getId())
-                .email(updateUserEntity.getEmail())
-                .password(passwordEncoder.encrypt(updateUserEntity.getPassword()))
-                .authorities(originUserEntity.getAuthorities())
+        UserEntity updateUser = userUpdateDto.toUserEntity();
+        UserEntity originUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(NoUserFoundException::new);
+
+        UserEntity user = UserEntity.builder()
+                .id(updateUser.getId())
+                .email(updateUser.getEmail())
+                .password(passwordEncoder.encrypt(updateUser.getPassword()))
+                .nickname(updateUser.getNickname())
+                .authorities(originUser.getAuthorities())
                 .build();
 
-        if (!originUserEntity.getEmail().equals(userUpdateDto.getEmail())) {
+        if (!originUser.getEmail().equals(userUpdateDto.getEmail())) {
             validateDuplicatedEmail(userUpdateDto.getEmail());
         }
-        userRepository.save(userEntity);
+        userRepository.save(user);
     }
 
     public void validateDuplicatedEmail(String email) {

@@ -15,9 +15,10 @@ import java.util.List;
 public class UserResponseDto {
     private Long id;
     private String email;
+    private String nickname;
     private List<UserAuthority> authorities;
 
-    public static UserResponseDto from(UserEntity userEntity) {
-        return new UserResponseDto(userEntity.getId(), userEntity.getEmail(), userEntity.getAuthorities());
+    public static UserResponseDto from(UserEntity user) {
+        return new UserResponseDto(user.getId(), user.getEmail(), user.getNickname(), user.getAuthorities());
     }
 }
