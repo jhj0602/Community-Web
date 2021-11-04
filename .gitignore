@@ -7,6 +7,8 @@ build/
 /src/main/resources/static/**
 /src/main/resources/application.yml
 /src/main/resources/application.properties
+aws.yml
+application.yml
 ### STS ###
 .apt_generated
 .classpath
