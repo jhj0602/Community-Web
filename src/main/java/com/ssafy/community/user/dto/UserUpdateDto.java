@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
@@ -43,7 +44,6 @@ public class UserUpdateDto {
                 .password(password)
                 .nickname(nickname)
                 .build();
-
         return userEntity;
     }
 

@@ -1,6 +1,6 @@
 <template>
   <div id="signUp">
-    <v-card width="400" class="mx-auto mt-5">
+    <v-card width="600" class="mx-auto mt-5">
       <div class="purple darken-2 text-center">
         <v-card-title>
           <span class="white--text">Sign Up</span>
@@ -73,11 +73,24 @@
                 ></v-text-field>
               </v-col>
             </v-row>
+            <v-row
+              ><v-col>
+                <v-card-subtitle>
+                  <h4>프로필 이미지 선택</h4>
+                </v-card-subtitle>
+                <v-file-input
+                  label="profile Image"
+                  filled
+                  prepend-icon="mdi-camera"
+                  accept=".jpg, .jpeg, .png"
+                  v-model="profile_pic"
+                ></v-file-input>
+              </v-col>
+            </v-row>
           </v-container>
         </v-form>
       </div>
 
-      <v-divider></v-divider>
       <v-card-actions>
         <v-btn
           :disabled="
@@ -103,6 +116,10 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <br />
+    <br />
+    <br />
+    <br />
   </div>
 </template>
 <script>
@@ -116,6 +133,7 @@ export default {
       password: "",
       passwordCheck: "",
       nickname: "",
+      profile_pic: {},
       rules: {
         required: (input) => !!input || "Required.",
         validateEmailType: (email) =>
@@ -141,18 +159,18 @@ export default {
       this.duplicateEmail(this.email);
     },
     async save() {
-      const userSignupDto = {
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck,
-        nickname: this.nickname,
-        address: this.nomalAddress + "-" + this.detailAddress + "-" + this.zip,
-      };
+      const userSignupDto = new FormData()
+      userSignupDto.append("email",this.email);
+      userSignupDto.append("password",this.password);
+      userSignupDto.append("passwordCheck",this.passwordCheck);
+      userSignupDto.append("nickname",this.nickname);
+      userSignupDto.append("images",this.profile_pic);
+
+
       if (await this.signup(userSignupDto)) {
         await this.$router.push({ name: "Login" });
       }
     },
-
   },
 };
 </script>

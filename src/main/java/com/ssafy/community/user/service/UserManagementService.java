@@ -1,6 +1,7 @@
 package com.ssafy.community.user.service;
 
 
+import com.ssafy.community.image.service.S3Uploader;
 import com.ssafy.community.user.dto.UserLoginDto;
 import com.ssafy.community.user.dto.UserResponseDto;
 import com.ssafy.community.user.dto.UserUpdateDto;
@@ -12,7 +13,9 @@ import com.ssafy.community.user.exception.UnmatchedPasswordCheckException;
 import com.ssafy.community.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserManagementService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final S3Uploader s3Uploader;
 
     public UserResponseDto findById(Long id) {
         Optional<UserEntity> user = userRepository.findById(id);
@@ -42,15 +46,15 @@ public class UserManagementService {
         userRepository.deleteById(id);
     }
 
-    public void update(UserUpdateDto userUpdateDto) {
+    public void update(UserUpdateDto userUpdateDto, MultipartFile profileImages) throws IOException {
         UserEntity updateUser = userUpdateDto.toUserEntity();
         UserEntity originUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(NoUserFoundException::new);
-
         UserEntity user = UserEntity.builder()
                 .id(updateUser.getId())
                 .email(updateUser.getEmail())
                 .password(passwordEncoder.encrypt(updateUser.getPassword()))
                 .nickname(updateUser.getNickname())
+                .profileImage((s3Uploader.upload(profileImages,"static")))
                 .authorities(originUser.getAuthorities())
                 .build();
 
