@@ -1,10 +1,17 @@
 <template>
-  <v-main class="main">
+
     <v-container class="privacy-wrap">
       <span style="font-size: 50px" class="mx-10">My Page</span>
       <v-container class="information-wrap">
-        <v-avatar size="150">
-          <v-img src="https://randomuser.me/api/portraits/men/78.jpg" />
+        <v-avatar size="150" v-if="this.$store.state.users.profileImage==null">
+          <v-img src="@/assets/default_profile.png"/>
+        </v-avatar>
+        <v-avatar size="150" v-else>
+          <v-img
+              v-bind:src="
+                this.$store.state.users.profileImage | loadImgOrPlaceholder
+              "
+          ></v-img>
         </v-avatar>
         <div class="privacy">
           <span class="user-name">{{ this.$store.state.users.nickname }}</span>
@@ -23,14 +30,14 @@
     </v-container>
 
 
-  </v-main>
+
 </template>
 <script>
 import { mapActions } from "vuex";
-
+import myMixin from "@/filter";
 
 export default {
-
+  mixins: [myMixin],
   data() {
     return {
 
@@ -55,9 +62,6 @@ export default {
       if (!(await this.getMyDetail(this.$store.state.users.id))) {
         await this.$router.push({ name: "Main" });
       }
-    },
-    async getMyCartList() {
-      await this.getMyCart(this.$store.state.users.id);
     },
   },
   computed: {

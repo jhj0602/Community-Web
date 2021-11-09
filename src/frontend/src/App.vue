@@ -1,10 +1,28 @@
 <template>
   <v-app>
     <div>
-      <v-app-bar color="deep-purple accent-7" dense dark height="70">
+      <v-app-bar
+        style="background: linear-gradient(-90deg, lightblue, purple)"
+        dense
+        dark
+        height="70"
+      >
         <v-badge avatar bordered overlap bottom icon="mdi-plus">
-          <v-avatar size="40">
-            <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
+          <v-avatar size="40" v-if="!isLogin">
+            <v-img src="@/assets/default_profile.png"></v-img>
+          </v-avatar>
+
+          <v-avatar size="40" v-if="isLogin">
+            <div v-if="this.$store.state.users.profileImage == null">
+              <v-img src="@/assets/default_profile.png"></v-img>
+            </div>
+            <div v-else>
+              <v-img
+                v-bind:src="
+                  this.$store.state.users.profileImage | loadImgOrPlaceholder
+                "
+              ></v-img>
+            </div>
           </v-avatar>
         </v-badge>
 
@@ -64,16 +82,20 @@
 
 <script>
 import { mapActions } from "vuex";
+import myMixin from "@/filter";
 export default {
   name: "App",
   components: {},
+  mixins: [myMixin],
   mounted() {},
+
   data: () => ({
     searchModel: null,
     drawer: false,
     group: null,
     is: false,
     nickname: "SSAFY WEB",
+    baseProfileImage: "https://cdn.vuetifyjs.com/images/john.png",
     items: [
       { title: "Home", icon: "mdi-view-dashboard" },
       { title: "Mypage", icon: "mdi-forum" },
