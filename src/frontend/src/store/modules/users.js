@@ -9,6 +9,7 @@ const state = {
   details: null,
   profileImg:null,
   nickname: "로그인하세요.",
+  modifiedDate:null,
   userList: [],
 };
 const mutations = {
@@ -22,6 +23,7 @@ const mutations = {
     state.details = data;
     state.nickname = data.nickname;
     state.profileImage=data.profileImage;
+    state.modifiedDate=data.modifiedDate;
   },
   setUserList: (state, data) => {
     state.userList = data;
@@ -31,6 +33,8 @@ const mutations = {
     state.details = null;
     state.id = null;
     state.nickname = "로그인하세요.";
+    state.profileImage=null;
+    state.modifiedDate=null;
   },
 };
 

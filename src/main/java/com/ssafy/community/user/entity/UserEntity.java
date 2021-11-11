@@ -1,9 +1,10 @@
 package com.ssafy.community.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ssafy.community.post.entity.PostEntity;
+import com.ssafy.community.time.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserEntity {
+public class UserEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -38,4 +39,9 @@ public class UserEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonManagedReference(value="user-userAuthority")
     private List<UserAuthority> authorities;
+
+    @OneToMany(cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonManagedReference
+    private List<PostEntity> posts;
 }
