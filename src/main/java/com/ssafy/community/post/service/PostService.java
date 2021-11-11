@@ -3,7 +3,9 @@ package com.ssafy.community.post.service;
 import com.ssafy.community.image.service.S3Uploader;
 import com.ssafy.community.post.dto.PostRequestDto;
 import com.ssafy.community.post.dto.PostResponseDto;
+import com.ssafy.community.post.dto.PostUpdateRequestDto;
 import com.ssafy.community.post.entity.PostEntity;
+import com.ssafy.community.post.exception.NoPostFoundException;
 import com.ssafy.community.post.repository.PostRepository;
 import com.ssafy.community.user.entity.UserEntity;
 import com.ssafy.community.user.exception.NoUserFoundException;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,10 +53,34 @@ public class PostService {
         }
         return postImages;
     }
+
     @Transactional
-    public PostResponseDto save(PostRequestDto postRequestDto) throws IOException {
+    public PostResponseDto save(PostRequestDto postRequestDto) {
         UserEntity user = userRepository.findById(postRequestDto.getUserId())
                 .orElseThrow(NoUserFoundException::new);
         return PostResponseDto.from(postRepository.save(postRequestDto.toSavePostEntity(user)));
+    }
+
+    @Transactional
+    public PostResponseDto update(PostUpdateRequestDto postUpdateRequestDto) {
+        log.info(postUpdateRequestDto.getImageUrl().toString());
+        PostEntity updatePost = postUpdateRequestDto.toUpdatePostEntity();
+        PostEntity originPost = postRepository.findById(postUpdateRequestDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다 id =" + updatePost.getId()));
+        PostEntity postEntity = PostEntity.builder()
+                .id(updatePost.getId())
+                .title(updatePost.getTitle())
+                .content(updatePost.getContent())
+                .imageUrl(updatePost.getImageUrl())
+                .user(originPost.getUser())
+                .build();
+        return PostResponseDto.from(postRepository.save(postEntity));
+    }
+
+    public void deleteById(Long id) {
+        if (!postRepository.existsById(id)) {
+            throw new NoPostFoundException();
+        }
+        postRepository.deleteById(id);
     }
 }

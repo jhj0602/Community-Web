@@ -2,14 +2,15 @@ package com.ssafy.community.post.controller;
 
 import com.ssafy.community.post.dto.PostRequestDto;
 import com.ssafy.community.post.dto.PostResponseDto;
+import com.ssafy.community.post.dto.PostUpdateRequestDto;
 import com.ssafy.community.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -41,9 +42,22 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> save(@RequestBody PostRequestDto postRequestDto) throws IOException {
+    public ResponseEntity<String> save(@RequestBody PostRequestDto postRequestDto) {
         PostResponseDto postResponseDto = postService.save(postRequestDto);
         return ResponseEntity.created(URI.create("/" + postResponseDto.getId()))
                 .build();
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> update(@RequestBody PostUpdateRequestDto postUpdateRequestDto) {
+        PostResponseDto postResponseDto = postService.update(postUpdateRequestDto);
+        return ResponseEntity.created(URI.create("/" + postResponseDto.getId()))
+                .build();
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        postService.deleteById(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
