@@ -47,7 +47,6 @@ const actions = {
         commit("setJwt", response.data.token);
         commit("setId", response.data.id);
         alert("로그인 되었습니다.");
-        console.log(state.jwt);
       })
       .catch((error) => {
         alert(error.response.data);
