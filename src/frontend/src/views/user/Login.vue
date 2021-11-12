@@ -72,7 +72,7 @@ export default {
       };
       if (await this.login(userSignupDto)) {
         await this.detail(this.$store.state.users.id);
-        await this.$router.push({name: "Main"});
+        await this.$router.push({name: "Home"});
       }
     },
   },

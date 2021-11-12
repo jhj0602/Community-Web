@@ -1,64 +1,73 @@
 <template>
   <v-app>
-    <div>
-      <v-app-bar
-        style="background: linear-gradient(-90deg, lightblue, purple)"
-        dense
-        dark
-        height="70"
-      >
-        <v-badge avatar bordered overlap bottom icon="mdi-plus">
-          <v-avatar size="40" v-if="!isLogin">
-            <v-img src="@/assets/default_profile.png"></v-img>
-          </v-avatar>
-
-          <v-avatar size="40" v-if="isLogin">
-            <div v-if="this.$store.state.users.profileImage == null">
+    <div class="main">
+      <v-main>
+        <v-app-bar
+          style="background: linear-gradient(-90deg, lightblue, purple)"
+          dense
+          dark
+          height="70"
+        >
+          <v-badge avatar bordered overlap bottom icon="mdi-plus">
+            <v-avatar
+              size="40px"
+              v-if="
+                this.$store.state.users.profileImage == null ||
+                !this.$store.state.users.profileImage
+              "
+              @click="toMyPage"
+            >
               <v-img src="@/assets/default_profile.png"></v-img>
-            </div>
-            <div v-else>
+            </v-avatar>
+            <v-avatar size="40px" v-else>
               <v-img
                 v-bind:src="
                   this.$store.state.users.profileImage | loadImgOrPlaceholder
                 "
+                alt="@/assets/default_profile.png"
               ></v-img>
-            </div>
-          </v-avatar>
-        </v-badge>
+            </v-avatar>
+          </v-badge>
 
-        <v-toolbar-title class="ma-3" v-if="!isLogin"
-          >SSAFY WEB</v-toolbar-title
-        >
-        <v-toolbar-title class="ma-3" v-if="isLogin">{{
-          this.$store.state.users.nickname
-        }}</v-toolbar-title>
-        <v-spacer></v-spacer>
+          <v-toolbar-title class="ma-3" v-if="!isLogin"
+            >SSAFY WEB
+          </v-toolbar-title>
+          <v-toolbar-title class="ma-3" v-if="isLogin"
+            >{{ this.$store.state.users.nickname }}
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
 
-        <v-btn icon>
-          <v-icon>mdi-heart</v-icon>
-        </v-btn>
-        <v-menu left bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
+          <v-btn icon>
+            <v-icon>mdi-heart</v-icon>
+          </v-btn>
+          <v-menu left bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on">
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
 
-          <v-list>
-            <v-list-item v-if="!isLogin" :to="{ name: 'Login' }">
-              <v-list-item-title>Login</v-list-item-title>
-            </v-list-item>
-            <v-list-item v-if="isLogin" @click="logout" :to="{ name: 'Login' }">
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item>
-            <v-list-item v-if="isLogin" to="/user/edit">
-              <v-list-item-title>회원정보 수정</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-app-bar>
+            <v-list>
+              <v-list-item v-if="!isLogin" :to="{ name: 'Login' }">
+                <v-list-item-title>Login</v-list-item-title>
+              </v-list-item>
+              <v-list-item
+                v-if="isLogin"
+                @click="logout"
+                :to="{ name: 'Login' }"
+              >
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item>
+              <v-list-item v-if="isLogin" to="/user/edit">
+                <v-list-item-title>회원정보 수정</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-app-bar>
+      </v-main>
     </div>
-    <v-main>
+
+    <v-main class="main">
       <v-container fluid>
         <router-view></router-view>
       </v-container>
@@ -70,10 +79,10 @@
       <v-btn>
         <v-icon color="blue" large>mdi-magnify</v-icon>
       </v-btn>
-      <v-btn>
+      <v-btn :to="{ name: 'PostCreate' }">
         <v-icon color="blue" large>mdi-plus</v-icon>
       </v-btn>
-      <v-btn :to="{ name: 'Mypage' }">
+      <v-btn :to="{ name: 'MyPage' }">
         <v-icon color="blue" large>mdi-account</v-icon>
       </v-btn>
     </v-bottom-navigation>
@@ -83,6 +92,7 @@
 <script>
 import { mapActions } from "vuex";
 import myMixin from "@/filter";
+
 export default {
   name: "App",
   components: {},
@@ -95,7 +105,6 @@ export default {
     group: null,
     is: false,
     nickname: "SSAFY WEB",
-    baseProfileImage: "https://cdn.vuetifyjs.com/images/john.png",
     items: [
       { title: "Home", icon: "mdi-view-dashboard" },
       { title: "Mypage", icon: "mdi-forum" },
@@ -105,8 +114,12 @@ export default {
     ...mapActions({ logout: "users/logout" }),
     async logoutUser() {
       if (await this.logout()) {
-        await this.$router.push({ name: "Main" });
+        await this.$router.push({ name: "Home" });
       }
+    },
+
+    toMyPage() {
+      this.$router.push({ name: "MyPage" });
     },
   },
   computed: {
@@ -119,3 +132,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.main {
+  font-family: "Do Hyeon", sans-serif;
+  font-weight: 100;
+}
+</style>

@@ -1,107 +1,125 @@
 <template>
   <v-container>
-    <v-card
+    <div v-for="(item, i) in listData" :key="`item-${i}`">
+      <v-card
         max-width="400"
         class="mx-auto"
-    >
-      <v-list-item two-line>
-        <v-list-item-avatar
-            size="50"
-            color="grey"
-        ></v-list-item-avatar>
-        <v-list-item-content>
-          <div class="text-overline mb-0">
-            OVERLINE
-          </div>
-        </v-list-item-content>
-      </v-list-item>
-      <v-carousel
-          :continuous="false"
-          :cycle="cycle"
-          :show-arrows="false"
+        style="background: linear-gradient(-80deg, lightblue, whitesmoke)"
+      >
+        <v-list-item three-line>
+          <v-list-item-avatar>
+            <div
+              v-if="item.writerProfileImage == null || !item.writerProfileImage"
+            >
+              <v-avatar size="50px" color="grey">
+                <v-img src="@/assets/default_profile.png"></v-img>
+              </v-avatar>
+            </div>
+            <div v-else>
+              <v-avatar size="50px">
+                <v-img
+                  v-bind:src="item.writerProfileImage | loadImgOrPlaceholder"
+                  alt="@/assets/default_profile.png"
+                ></v-img>
+              </v-avatar></div
+          ></v-list-item-avatar>
+
+          <v-list-item-content class="text--white">
+            <div class="text-overline mb-0">{{ item.writer }}</div>
+            <div class="text-overline mb-0">
+              {{ item.modifiedDate | timeForToday }}
+            </div>
+          </v-list-item-content>
+        </v-list-item>
+        <v-expansion-panels style="outline: 0">
+          <v-expansion-panel>
+            <v-expansion-panel-header>{{
+              item.title
+            }}</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              {{ item.content }}
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <v-carousel
           hide-delimiter-background
           delimiter-icon="mdi-minus"
           height="300"
-      >
-        <v-carousel-item
-            v-for="(slide, i) in slides"
-            :key="i"
         >
-          <v-sheet
-              :color="colors[i]"
-              height="100%"
-              tile
-          >
-            <v-row
-                class="fill-height"
-                align="center"
-                justify="center"
-            >
-              <div class="text-h2">
-                {{ slide }} Slide
-              </div>
-            </v-row>
-          </v-sheet>
-        </v-carousel-item>
-      </v-carousel>
-      <v-list two-line>
-        <v-card-actions>
-          <v-btn icon>
-            <v-icon color="pink darken-1" >mdi-heart</v-icon>
-          </v-btn>
-          <v-btn icon>
-            <v-icon>mdi-bookmark</v-icon>
-          </v-btn>
-          <v-btn icon>
-            <v-icon>mdi-share-variant</v-icon>
-          </v-btn>
-          <v-btn
-              right
-              icon
-              @click="show = !show"
-          >
-            <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-          </v-btn>
-        </v-card-actions>
+          <v-carousel-item
+            v-for="(item, i) in items"
+            :key="i"
+            :src="item.src"
+            height="100%"
+          ></v-carousel-item>
+        </v-carousel>
+        <v-list one-line>
+          <v-card-actions>
+            <v-btn icon>
+              <v-icon color="pink darken-1">mdi-heart</v-icon>
+            </v-btn>
+            <v-btn icon>
+              <v-icon>mdi-bookmark</v-icon>
+            </v-btn>
+            <v-btn icon>
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-list>
+      </v-card>
+      <br />
+    </div>
 
-        <v-expand-transition>
-          <div v-show="show">
-            <v-divider></v-divider>
-
-            <v-card-text>
-              I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
-            </v-card-text>
-          </div>
-        </v-expand-transition>
-
-
-      </v-list>
-    </v-card>
+    <br />
   </v-container>
 </template>
 
 <script>
+import axios from "axios";
+import myMixin from "@/filter";
+
 export default {
+  mixins: [myMixin],
   name: "Community",
-  data () {
+  data() {
     return {
-      show: false,
-      colors: [
-        'green',
-        'secondary',
-        'yellow darken-4',
-        'red lighten-2',
-        'orange darken-1',
+      items: [
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
+        },
+
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+        },
       ],
       cycle: false,
-      slides: [
-        'First',
-        'Second',
-        'Third',
-        'Fourth',
-        'Fifth',
-      ],
-    }
+      show: [],
+      listData: [],
+      panel: [],
+    };
+  },
+  created() {
+    this.getPostListData();
+  },
+  methods: {
+    showContent(i) {
+      console.log(i + " " + this.show[i]);
+      if (this.show[i]) {
+        this.show[i] = false;
+      } else {
+        this.show[i] = true;
+      }
+    },
+    getPostListData() {
+      axios
+        .get("/api/posts")
+        .then((res) => {
+          this.listData = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
 };
 </script>
