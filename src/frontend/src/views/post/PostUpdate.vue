@@ -169,7 +169,6 @@ export default {
       for (let i = 0; i < this.images.length; i++) {
         frmUploadImage.append("images", this.images[i]);
       }
-
       axios
         .post("/api/posts/create/images", frmUploadImage, {
           headers: {
@@ -180,12 +179,13 @@ export default {
           const imageObj = res.data;
           console.log(res.data);
           const productObj = {
+            id:this.id,
             title: this.title,
             content: this.content,
             imageUrl: imageObj,
           };
           axios
-            .post("/api/posts/update", productObj)
+            .put("/api/posts/update", productObj)
             .then((res) => {
               this.$router.push({
                 name: "MyPage",
