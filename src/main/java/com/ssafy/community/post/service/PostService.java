@@ -12,6 +12,7 @@ import com.ssafy.community.user.exception.NoUserFoundException;
 import com.ssafy.community.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +30,7 @@ public class PostService {
     private final S3Uploader s3Uploader;
 
     public List<PostResponseDto> findAll() {
-        List<PostEntity> posts = postRepository.findAll();
+        List<PostEntity> posts = postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
         return posts.stream().map(PostResponseDto::from).collect(Collectors.toList());
     }
 
