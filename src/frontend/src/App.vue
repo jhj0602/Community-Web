@@ -8,7 +8,12 @@
           dark
           height="70"
         >
-          <v-badge avatar bordered overlap bottom icon="mdi-plus">
+          <v-toolbar-title>
+            <v-btn icon @click="$router.go(-1)">
+              <v-icon size="xx-large" color="white">mdi-arrow-left</v-icon>
+            </v-btn>
+          </v-toolbar-title>
+          <v-badge avatar  overlap bottom icon="mdi-plus">
             <v-avatar
               size="40px"
               v-if="
