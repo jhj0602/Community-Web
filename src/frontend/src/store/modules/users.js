@@ -98,11 +98,9 @@ const actions = {
             alert("중복된 이메일입니다.");
           }
           resolve(response);
-          console.log(response);
         })
         .catch((error) => {
           alert(error.response.data);
-          console.log(error);
         });
     });
   },
@@ -114,11 +112,9 @@ const actions = {
       })
       .then((response) => {
         commit("setUserDetails", response.data);
-        console.log(response);
       })
       .catch((error) => {
         alert(error.response.data);
-        console.error(error);
         isSuccess = false;
       });
     return isSuccess;
@@ -129,14 +125,12 @@ const actions = {
       .delete(`${config.baseUrl}${state.details.id}/delete`, {
         headers: { Authorization: `Bearer ${state.jwt}` },
       })
-      .then((response) => {
+      .then(() => {
         commit("logout");
         alert("계정을 삭제했습니다.");
-        console.log(response);
       })
       .catch((error) => {
         alert(error.response.data);
-        console.error(error);
         isSuccess = false;
       });
     return isSuccess;
@@ -147,12 +141,10 @@ const actions = {
       .delete(`${config.baseUrl}${id}/delete`, {
         headers: { Authorization: `Bearer ${state.jwt}` },
       })
-      .then((response) => {
-        console.log(response);
+      .then(() => {
       })
       .catch((error) => {
         alert(error.response.data);
-        console.error(error);
         isSuccess = false;
       });
     return isSuccess;
@@ -164,14 +156,12 @@ const actions = {
       .put(`${config.baseUrl}update`, userUpdateDto, {
         headers: { Authorization: `Bearer ${state.jwt}` },
       })
-      .then((response) => {
+      .then(() => {
         alert("계정을 수정했습니다. 다시 로그인하세요");
         commit("logout");
-        console.log(response);
       })
       .catch((error) => {
         alert(error.response.data);
-        console.error(error);
         isSuccess = false;
       });
     return isSuccess;
@@ -183,11 +173,9 @@ const actions = {
         headers: { Authorization: `Bearer ${state.jwt}` },
       })
       .then((response) => {
-        console.log(response);
         commit("setUserList", response.data);
       })
       .catch((error) => {
-        console.error(error);
         alert(error.response);
         isSuccess = false;
       });
