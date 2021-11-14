@@ -165,8 +165,6 @@ export default {
       userSignupDto.append("passwordCheck",this.passwordCheck);
       userSignupDto.append("nickname",this.nickname);
       userSignupDto.append("images",this.profile_pic);
-
-
       if (await this.signup(userSignupDto)) {
         await this.$router.push({ name: "Login" });
       }
