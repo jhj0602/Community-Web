@@ -32,6 +32,7 @@
         </v-card-subtitle>
         <input
           type="file"
+          accept=".gif, .jpg, .png"
           ref="imageInput"
           name="images[]"
           id="photo"
@@ -118,6 +119,7 @@ export default {
       previewImage: [],
       title: "",
       content: "",
+      imageObj: [],
     };
   },
   created() {
@@ -165,6 +167,13 @@ export default {
       this.images.splice(key, 1);
     },
     allSubmit() {
+      if (this.images.length === undefined) {
+        alert("이미지가 없습니다 최소 한 장은 올려주세요");
+      } else {
+        this.postImageSave();
+      }
+    },
+    postImageSave() {
       let frmUploadImage = new FormData();
       for (let i = 0; i < this.images.length; i++) {
         frmUploadImage.append("images", this.images[i]);
@@ -173,30 +182,35 @@ export default {
         .post("/api/posts/create/images", frmUploadImage, {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${this.$store.state.users.jwt}`,
           },
         })
         .then((res) => {
-          const imageObj = res.data;
-          console.log(res.data);
-          const productObj = {
-            id:this.id,
-            title: this.title,
-            content: this.content,
-            imageUrl: imageObj,
-          };
-          axios
-            .put("/api/posts/update", productObj)
-            .then((res) => {
-              this.$router.push({
-                name: "MyPage",
-              });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          this.imageObj = res.data;
+          this.postObjectSend();
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          alert("이미지가 유효하지 않습니다.");
+        });
+    },
+    postObjectSend() {
+      const productObj = {
+        id: this.id,
+        title: this.title,
+        content: this.content,
+        imageUrl: this.imageObj,
+      };
+      axios
+        .put("/api/posts/update", productObj, {
+          headers: { Authorization: `Bearer ${this.$store.state.users.jwt}` },
+        })
+        .then(() => {
+          this.$router.push({
+            name: "MyPage",
+          });
+        })
+        .catch(() => {
+          alert("텍스트 형식으로 다시 작성 해주세요");
         });
     },
   },

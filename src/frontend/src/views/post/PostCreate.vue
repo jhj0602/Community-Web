@@ -4,108 +4,109 @@
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-card-title>
           <v-text-field
-            color="primary"
-            :rules="titleRules"
-            required
-            v-model="title"
-            counter="15"
-            label="Title"
-            clearable
-            clear-icon="mdi-close-circle"
-            outlined
+              color="primary"
+              :rules="titleRules"
+              required
+              v-model="title"
+              counter="15"
+              label="Title"
+              clearable
+              clear-icon="mdi-close-circle"
+              outlined
           ></v-text-field>
         </v-card-title>
         <v-card-title>
           <v-textarea
-            color="primary"
-            :rules="contentRules"
-            v-model="content"
-            counter="50"
-            label="Content"
-            clearable
-            clear-icon="mdi-close-circle"
-            outlined
+              color="primary"
+              :rules="contentRules"
+              v-model="content"
+              counter="50"
+              label="Content"
+              clearable
+              clear-icon="mdi-close-circle"
+              outlined
           ></v-textarea>
         </v-card-title>
         <v-card-subtitle>
           <h4>Image를 올려주세요</h4>
         </v-card-subtitle>
         <input
-          type="file"
-          ref="imageInput"
-          name="images[]"
-          id="photo"
-          @change="imagesAdd"
-          hidden
-          multiple
+            type="file"
+            accept=".gif, .jpg, .png"
+            ref="imageInput"
+            name="images[]"
+            id="photo"
+            @change="imagesAdd"
+            hidden
+            multiple
         />
 
         <v-btn
-          color="blue-grey"
-          class="ma-2 white--text"
-          @click="onClickImageUpload"
-          >Imagae Upload
-          <v-icon right dark> mdi-cloud-upload </v-icon>
+            color="blue-grey"
+            class="ma-2 white--text"
+            @click="onClickImageUpload"
+        >Imagae Upload
+          <v-icon right dark> mdi-cloud-upload</v-icon>
         </v-btn>
         <v-simple-table>
           <template v-slot:default>
             <thead>
-              <tr>
-                <th class="text-left">Image</th>
-                <th class="text-left">Delete</th>
-              </tr>
+            <tr>
+              <th class="text-left">Image</th>
+              <th class="text-left">Delete</th>
+            </tr>
             </thead>
             <tbody>
-              <tr v-for="(img, i) in previewImage" v-bind:key="i">
-                <th>
-                  <v-img :src="img" width="150" height="150"></v-img>
-                </th>
-                <th>
-                  <v-btn
+            <tr v-for="(img, i) in previewImage" v-bind:key="i">
+              <th>
+                <v-img :src="img" width="150" height="150"></v-img>
+              </th>
+              <th>
+                <v-btn
                     x-small
                     dark
                     color="pink"
                     v-show="previewImage"
                     @click="removeImage(i)"
-                  >
-                    <v-icon dark> mdi-delete </v-icon>
-                    Image {{ i + 1 }}
-                  </v-btn>
-                </th>
-              </tr>
+                >
+                  <v-icon dark> mdi-delete</v-icon>
+                  Image {{ i + 1 }}
+                </v-btn>
+              </th>
+            </tr>
             </tbody>
           </template>
         </v-simple-table>
         <v-card-subtitle>
           <v-checkbox
-            v-model="checkbox"
-            :rules="[(v) => !!v || '게시물 등록에 동의 해주세요']"
-            label="Do you agree?"
-            required
+              v-model="checkbox"
+              :rules="[(v) => !!v || '게시물 등록에 동의 해주세요']"
+              label="Do you agree?"
+              required
           ></v-checkbox>
         </v-card-subtitle>
       </v-form>
       <v-btn
-        color="blue-grey"
-        block
-        class="white--text"
-        :disabled="!valid"
-        @click="validate"
+          color="blue-grey"
+          block
+          class="white--text"
+          :disabled="!valid"
+          @click="validate"
       >
         Submit
-        <v-icon right color="white"> mdi-checkbox-marked-circle </v-icon>
+        <v-icon right color="white"> mdi-checkbox-marked-circle</v-icon>
       </v-btn>
     </v-card>
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
 import axios from "axios";
+
 export default {
   data() {
     return {
-      valid: true,
-      titleRules: [
+      valid       : true,
+      titleRules  : [
         (v) => !!v || "title is required",
         (v) => (v && v.length <= 15) || "Name must be less than 15 characters",
       ],
@@ -113,11 +114,11 @@ export default {
         (v) => !!v || "content is required",
         (v) => (v && v.length <= 50) || "50자 이하로 작성 부탁해용",
       ],
-      checkbox: false,
-      images: {},
+      checkbox    : false,
+      images      : {},
       previewImage: [],
-      title: "",
-      content: "",
+      title       : "",
+      content     : "",
     };
   },
   methods: {
@@ -151,41 +152,52 @@ export default {
       this.images.splice(key, 1);
     },
     allSubmit() {
+      if (this.images.length === undefined) {
+        alert("이미지가 없습니다 한 장은 올려주세요");
+      } else {
+        this.postImageSave();
+      }
+    },
+    postImageSave() {
       let frmUploadImage = new FormData();
       for (let i = 0; i < this.images.length; i++) {
         frmUploadImage.append("images", this.images[i]);
       }
-
       axios
-        .post("/api/posts/create/images", frmUploadImage, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          const imageObj = res.data;
-          console.log(res.data);
-          const productObj = {
-            title: this.title,
-            content: this.content,
-            userId:this.$store.state.users.id,
-            imageUrl: imageObj,
-          };
-          axios
-            .post("/api/posts/create", productObj)
-            .then((res) => {
-              this.$router.push({
-                name: "MyPage",
-                params: { id: res.data },
-              });
-            })
-            .catch((err) => {
-              console.log(err);
+          .post("/api/posts/create/images", frmUploadImage, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization : `Bearer ${this.$store.state.users.jwt}`,
+            },
+          })
+          .then((res) => {
+            this.imageObj = res.data;
+            this.postObjectSend();
+          })
+          .catch((err) => {
+            alert(err.response.data);
+          });
+    },
+    postObjectSend() {
+      const productObj = {
+        title   : this.title,
+        content : this.content,
+        userId  : this.$store.state.users.id,
+        imageUrl: this.imageObj,
+      };
+      axios
+          .post("/api/posts/create", productObj, {
+            headers: {Authorization: `Bearer ${this.$store.state.users.jwt}`},
+          })
+          .then((res) => {
+            this.$router.push({
+              name  : "MyPage",
+              params: {id: res.data},
             });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
     },
   },
 };
