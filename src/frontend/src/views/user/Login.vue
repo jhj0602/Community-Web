@@ -41,10 +41,9 @@
           <v-btn
               color="deep-purple accent-7"
               class="mr-2 white--text"
-              @click="reset"
+              :to="{ name: 'FindByUser' }"
           >
-            Reset
-            <v-icon right>mdi-backup-restore</v-icon>
+            ID/PW 찾기
           </v-btn>
 
         </v-card-actions>

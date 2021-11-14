@@ -3,8 +3,8 @@
     <div v-for="(item, i) in listData" :key="`item-${i}`">
       <v-card
         max-width="400"
-        class="mx-auto"
-        style="background: linear-gradient(-80deg, lightblue, whitesmoke)"
+        class="mx-auto purple darken-1"
+
       >
         <v-list-item three-line>
           <v-list-item-avatar>
@@ -23,8 +23,7 @@
                 ></v-img>
               </v-avatar></div
           ></v-list-item-avatar>
-
-          <v-list-item-content class="text--white">
+          <v-list-item-content style="color: whitesmoke">
             <div class="text-overline mb-0">{{ item.writer }}</div>
             <div class="text-overline mb-0">
               {{ item.modifiedDate | timeForToday }}
@@ -41,18 +40,20 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-carousel
-          hide-delimiter-background
-          delimiter-icon="mdi-minus"
-          height="300"
-        >
-          <v-carousel-item
-            v-for="(item, i) in items"
-            :key="i"
-            :src="item.src"
-            height="100%"
-          ></v-carousel-item>
-        </v-carousel>
+        <div v-if="item.postImageUrl.length!==0">
+          <v-carousel
+            hide-delimiter-background
+            delimiter-icon="mdi-minus"
+            height="300"
+          >
+            <v-carousel-item
+              v-for="(img, i) in item.postImageUrl"
+              :key="i"
+              :src="img | loadImgOrPlaceholder"
+              height="100%"
+            ></v-carousel-item>
+          </v-carousel>
+        </div>
         <v-list one-line>
           <v-card-actions>
             <v-btn icon>
@@ -69,7 +70,6 @@
       </v-card>
       <br />
     </div>
-
     <br />
   </v-container>
 </template>
@@ -77,7 +77,6 @@
 <script>
 import axios from "axios";
 import myMixin from "@/filter";
-
 export default {
   mixins: [myMixin],
   name: "Community",

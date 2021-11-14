@@ -119,7 +119,6 @@ export default {
         });
     },
     postDeleteById(postId) {
-      console.log(postId);
       if (confirm("정말로 삭제하시겠습니까?")) {
         axios
           .delete(`/api/posts/delete/` + postId, {

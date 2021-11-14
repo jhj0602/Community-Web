@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,12 +45,12 @@ public class PostService {
         return PostResponseDto.from(post);
     }
 
-    public List<String> postS3ImageSave(List<MultipartFile> images) {
+    public List<String> postS3ImageSave(List<MultipartFile> images) throws IOException {
         List<String> postImages = new ArrayList<>();
         if (!images.isEmpty()) {
             for (MultipartFile image : images) {
-//                images.add(s3Uploader.upload(image, "static"));
-                postImages.add(image.getOriginalFilename());
+                postImages.add(s3Uploader.upload(image, "static"));
+//                postImages.add(image.getOriginalFilename());
             }
         }
         return postImages;
@@ -64,10 +65,10 @@ public class PostService {
 
     @Transactional
     public PostResponseDto update(PostUpdateRequestDto postUpdateRequestDto) {
-        log.info(postUpdateRequestDto.getImageUrl().toString());
         PostEntity updatePost = postUpdateRequestDto.toUpdatePostEntity();
         PostEntity originPost = postRepository.findById(postUpdateRequestDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다 id =" + updatePost.getId()));
+        postS3ImageDelete(originPost.getImageUrl());
         PostEntity postEntity = PostEntity.builder()
                 .id(updatePost.getId())
                 .title(updatePost.getTitle())
@@ -76,6 +77,12 @@ public class PostService {
                 .user(originPost.getUser())
                 .build();
         return PostResponseDto.from(postRepository.save(postEntity));
+    }
+
+    public void postS3ImageDelete(List<String> imageUrl) {
+        for (String key : imageUrl) {
+            s3Uploader.delete(key);
+        }
     }
 
     public void deleteById(Long id) {
