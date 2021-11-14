@@ -49,6 +49,19 @@ public class UserController {
                 .build();
     }
 
+    @PutMapping("/update")
+    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
+    public ResponseEntity<Void> update(@RequestParam("id") @Valid Long id,
+                                       @RequestParam("email") @Valid String email,
+                                       @RequestParam("password") @Valid String password,
+                                       @RequestParam("passwordCheck") @Valid String passwordCheck,
+                                       @RequestParam("nickname") @Valid String nickname,
+                                       @RequestParam("images") MultipartFile images) throws Exception {
+        UserUpdateDto userUpdateDto = new UserUpdateDto(id, email, password, passwordCheck, nickname);
+        userManagementService.update(userUpdateDto, images);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @GetMapping("/{id}/details")
     @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<UserResponseDto> details(@PathVariable Long id) {
@@ -61,19 +74,6 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userManagementService.deleteById(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
-    }
-
-    @PutMapping("/update")
-    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
-    public ResponseEntity<Void> update(@RequestParam("id") @Valid Long id,
-                                       @RequestParam("email") @Valid String email,
-                                       @RequestParam("password") @Valid String password,
-                                       @RequestParam("passwordCheck") @Valid String passwordCheck,
-                                       @RequestParam("nickname") @Valid String nickname,
-                                       @RequestParam("images") MultipartFile images) throws Exception {
-        UserUpdateDto userUpdateDto = new UserUpdateDto(id, email, password, passwordCheck, nickname);
-        userManagementService.update(userUpdateDto, images);
-        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/list")
