@@ -42,7 +42,7 @@
 
         <v-timeline align-top dense>
           <v-timeline-item
-            v-for="(message,i) in userPostList"
+            v-for="(message, i) in userPostList"
             :key="`message-${i}`"
             small
           >
@@ -59,12 +59,12 @@
                 <v-btn
                   icon
                   color="blue"
-                  :to="{ name: 'PostUpdate' ,params:{id:message.id} }"
+                  :to="{ name: 'PostUpdate', params: { id: message.id } }"
                 >
                   <v-icon left> mdi-pencil </v-icon>
                   수정
                 </v-btn>
-                <v-btn icon color="red">
+                <v-btn icon color="red" @click="postDeleteById(message.id)">
                   <v-icon left> mdi-delete </v-icon>
                   삭제
                 </v-btn>
@@ -117,6 +117,21 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+    postDeleteById(postId) {
+      console.log(postId);
+      if (confirm("정말로 삭제하시겠습니까?")) {
+        axios
+          .delete(`/api/posts/delete/` + postId, {
+            headers: { Authorization: `Bearer ${this.$store.state.users.jwt}` },
+          })
+          .then(() => {
+            this.getUserPostListData();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
   },
   computed: {

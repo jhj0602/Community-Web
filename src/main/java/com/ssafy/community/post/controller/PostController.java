@@ -4,6 +4,7 @@ import com.ssafy.community.post.dto.PostRequestDto;
 import com.ssafy.community.post.dto.PostResponseDto;
 import com.ssafy.community.post.dto.PostUpdateRequestDto;
 import com.ssafy.community.post.service.PostService;
+import com.ssafy.community.user.annotation.PreAuthorize;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -37,11 +38,13 @@ public class PostController {
     }
 
     @PostMapping("/create/images")
+    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<List<String>> imageSave(@RequestPart List<MultipartFile> images) {
         return ResponseEntity.ok((postService.postS3ImageSave(images)));
     }
 
     @PostMapping("/create")
+    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<String> save(@RequestBody PostRequestDto postRequestDto) {
         PostResponseDto postResponseDto = postService.save(postRequestDto);
         return ResponseEntity.created(URI.create("/" + postResponseDto.getId()))
@@ -49,6 +52,7 @@ public class PostController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<String> update(@RequestBody PostUpdateRequestDto postUpdateRequestDto) {
         PostResponseDto postResponseDto = postService.update(postUpdateRequestDto);
         return ResponseEntity.created(URI.create("/" + postResponseDto.getId()))
@@ -56,6 +60,7 @@ public class PostController {
     }
 
     @DeleteMapping("delete/{id}")
+    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         postService.deleteById(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
