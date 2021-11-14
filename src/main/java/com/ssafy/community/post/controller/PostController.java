@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class PostController {
 
     @PostMapping("/create/images")
     @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
-    public ResponseEntity<List<String>> imageSave(@RequestPart List<MultipartFile> images) {
+    public ResponseEntity<List<String>> imageSave(@RequestPart List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok((postService.postS3ImageSave(images)));
     }
 
