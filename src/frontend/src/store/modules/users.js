@@ -50,7 +50,6 @@ const actions = {
       })
       .catch((error) => {
         alert(error.response.data);
-        console.error(error);
         isSuccess = false;
       });
     return isSuccess;
@@ -72,11 +71,7 @@ const actions = {
   async signUp({ commit }, userSignupDto) {
     let isSuccess = true;
     await axios
-      .post(`${config.baseUrl}`, userSignupDto, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .post(`${config.baseUrl}`, userSignupDto)
       .then((response) => {
         alert("회원가입 성공!");
         console.log(response);
@@ -151,6 +146,7 @@ const actions = {
   },
 
   async update({ commit }, userUpdateDto) {
+    console.log(userUpdateDto)
     let isSuccess = true;
     await axios
       .put(`${config.baseUrl}update`, userUpdateDto, {
@@ -161,7 +157,7 @@ const actions = {
         commit("logout");
       })
       .catch((error) => {
-        alert(error.response.data);
+        alert("계정을 수정하지 못했습니다.  code : "+error.response.status);
         isSuccess = false;
       });
     return isSuccess;
