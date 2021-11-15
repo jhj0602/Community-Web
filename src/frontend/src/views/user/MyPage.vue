@@ -27,7 +27,7 @@
           <br />
           <span>수정일 : {{ this.$store.state.users.modifiedDate }}</span>
           <br />
-          <router-link to="/editUser" style="color: white" v-if="isLogin">
+          <router-link to="/user/edit" style="color: white" v-if="isLogin">
             <button>회원정보 변경</button>
           </router-link>
           <span class="hidden-xs-only">&nbsp;/&nbsp;</span>
