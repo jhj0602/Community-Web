@@ -64,6 +64,20 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <v-row
+                ><v-col>
+                  <v-card-subtitle>
+                    <h4>프로필 이미지 선택</h4>
+                  </v-card-subtitle>
+                  <v-file-input
+                    label="profile Image"
+                    filled
+                    prepend-icon="mdi-camera"
+                    accept=".jpg, .jpeg, .png"
+                    v-model="profile_pic"
+                  ></v-file-input>
+                </v-col>
+              </v-row>
             </v-container>
           </v-form>
         </div>
@@ -74,14 +88,14 @@
           :disabled="!valid"
           color="deep-purple accent-7"
           class="mr-0 white--text"
-          @click="update"
+          @click="allSubmit"
         >
           회원수정
           <v-icon right>mdi-arrow-right-thick</v-icon>
         </v-btn>
 
         <v-btn color="error" class="mr-1 white--text" @click="deleteUser">
-         회원탈퇴
+          회원탈퇴
           <v-icon right>mdi-trash-can</v-icon>
         </v-btn>
       </v-card-actions>
@@ -90,6 +104,7 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import axios from "axios";
 
 export default {
   data() {
@@ -101,7 +116,8 @@ export default {
       passwordCheck: "",
       nickname: "",
       valid: true,
-
+      profile_pic: null,
+      profileImage: "",
       rules: {
         required: (input) => !!input || "Required.",
         minPw: (password) => password.length >= 8 || "Min 8 characters",
@@ -119,13 +135,40 @@ export default {
     ...mapActions({ delUser: "users/deleteUser" }),
     ...mapActions({ logout: "users/logout" }),
     ...mapActions({ getUser: "users/details" }),
-    update: async function () {
+
+    allSubmit() {
+      if (
+        this.profile_pic === null ||
+        this.profile_pic === undefined ||
+        this.profile_pic.length === 0
+      ) {
+        this.profileImage = "";
+        this.userObjectSend();
+      } else {
+        this.userImageSave();
+      }
+    },
+    userImageSave() {
+      let frmUploadImage = new FormData();
+      frmUploadImage.append("images", this.profile_pic);
+      axios
+        .post("/api/users/create/images", frmUploadImage)
+        .then((res) => {
+          this.profileImage = res.data;
+          this.userObjectSend();
+        })
+        .catch((err) => {
+          alert(err.response.message);
+        });
+    },
+    async userObjectSend () {
       const userUpdateDto = {
         id: this.$store.state.users.details.id,
         email: this.email,
         password: this.password,
         passwordCheck: this.passwordCheck,
         nickname: this.nickname,
+        profileImage: this.profileImage,
       };
       if (await this.updateUser(userUpdateDto)) {
         await this.$router.push({ name: "Login" });

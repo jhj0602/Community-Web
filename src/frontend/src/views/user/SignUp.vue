@@ -73,8 +73,8 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row
-              ><v-col>
+            <v-row>
+              <v-col>
                 <v-card-subtitle>
                   <h4>프로필 이미지 선택</h4>
                 </v-card-subtitle>
@@ -101,7 +101,7 @@
           "
           color="deep-purple accent-7"
           class="mr-3 white--text"
-          @click="save"
+          @click="allSubmit"
         >
           Sign up
           <v-icon right>mdi-arrow-right-thick</v-icon>
@@ -124,6 +124,8 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -133,7 +135,8 @@ export default {
       password: "",
       passwordCheck: "",
       nickname: "",
-      profile_pic: {},
+      profile_pic: [],
+      profileImage: "",
       rules: {
         required: (input) => !!input || "Required.",
         validateEmailType: (email) =>
@@ -147,9 +150,7 @@ export default {
         pwCheck: (passwordCheck) =>
           this.password === passwordCheck || "Password mismatch",
       },
-      zip: "",
-      nomalAddress: "",
-      detailAddress: "",
+
     };
   },
   methods: {
@@ -158,13 +159,39 @@ export default {
     isDuplicatedEmail: function () {
       this.duplicateEmail(this.email);
     },
-    async save() {
-      const userSignupDto = new FormData()
-      userSignupDto.append("email",this.email);
-      userSignupDto.append("password",this.password);
-      userSignupDto.append("passwordCheck",this.passwordCheck);
-      userSignupDto.append("nickname",this.nickname);
-      userSignupDto.append("images",this.profile_pic);
+    allSubmit() {
+      if (
+        this.profile_pic === null ||
+        this.profile_pic === undefined ||
+        this.profile_pic.length === 0
+      ) {
+        this.profileImage = "";
+        this.userObjectSend();
+      } else {
+        this.userImageSave();
+      }
+    },
+    userImageSave() {
+      let frmUploadImage = new FormData();
+      frmUploadImage.append("images", this.profile_pic);
+      axios
+        .post("/api/users/create/images", frmUploadImage)
+        .then((res) => {
+          this.profileImage = res.data;
+          this.userObjectSend();
+        })
+        .catch((err) => {
+          alert(err.response.message);
+        });
+    },
+    async userObjectSend() {
+      const userSignupDto = {
+        email: this.email,
+        password: this.password,
+        passwordCheck: this.passwordCheck,
+        nickname: this.nickname,
+        profileImage: this.profileImage,
+      };
       if (await this.signup(userSignupDto)) {
         await this.$router.push({ name: "Login" });
       }
