@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
@@ -37,13 +38,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> signUp(@RequestParam("email") @Valid String email,
-                                         @RequestParam("password") @Valid String password,
-                                         @RequestParam("passwordCheck") @Valid String passwordCheck,
-                                         @RequestParam("nickname") @Valid String nickname,
-                                         @RequestParam("images") MultipartFile images) throws Exception {
-        UserSignupDto userSignupDto = new UserSignupDto(email, password, passwordCheck, nickname);
-        UserResponseDto savedUser = userSignupService.save(userSignupDto, images);
+    public ResponseEntity<String> signUp(@RequestBody @Valid UserSignupDto userSignupDto) throws Exception {
+        UserResponseDto savedUser = userSignupService.save(userSignupDto);
         return ResponseEntity
                 .created(URI.create("/" + savedUser.getId()))
                 .build();
@@ -51,15 +47,13 @@ public class UserController {
 
     @PutMapping("/update")
     @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
-    public ResponseEntity<Void> update(@RequestParam("id") @Valid Long id,
-                                       @RequestParam("email") @Valid String email,
-                                       @RequestParam("password") @Valid String password,
-                                       @RequestParam("passwordCheck") @Valid String passwordCheck,
-                                       @RequestParam("nickname") @Valid String nickname,
-                                       @RequestParam("images") MultipartFile images) throws Exception {
-        UserUpdateDto userUpdateDto = new UserUpdateDto(id, email, password, passwordCheck, nickname);
-        userManagementService.update(userUpdateDto, images);
+    public ResponseEntity<Void> update(@RequestBody @Valid UserUpdateDto userUpdateDto) {
+        userManagementService.update(userUpdateDto);
         return new ResponseEntity(HttpStatus.OK);
+    }
+    @PostMapping("/create/images")
+    public ResponseEntity<String> imageSave(@RequestParam("images")MultipartFile images) throws IOException {
+        return ResponseEntity.ok((userManagementService.userS3ImageSave(images)));
     }
 
     @GetMapping("/{id}/details")
