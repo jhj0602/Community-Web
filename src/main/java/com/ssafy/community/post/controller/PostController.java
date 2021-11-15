@@ -40,7 +40,7 @@ public class PostController {
 
     @PostMapping("/create/images")
     @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
-    public ResponseEntity<List<String>> imageSave(@RequestPart List<MultipartFile> images) throws IOException {
+    public ResponseEntity<List<String>> imageSave(@RequestParam("images") List<MultipartFile> images) throws IOException {
         return ResponseEntity.ok((postService.postS3ImageSave(images)));
     }
 

@@ -49,8 +49,8 @@ public class PostService {
         List<String> postImages = new ArrayList<>();
         if (!images.isEmpty()) {
             for (MultipartFile image : images) {
-                postImages.add(s3Uploader.upload(image, "static"));
-//                postImages.add(image.getOriginalFilename());
+//                postImages.add(s3Uploader.upload(image, "static"));
+              postImages.add(image.getOriginalFilename());
             }
         }
         return postImages;
@@ -80,8 +80,10 @@ public class PostService {
     }
 
     public void postS3ImageDelete(List<String> imageUrl) {
-        for (String key : imageUrl) {
-            s3Uploader.delete(key);
+        if (!imageUrl.isEmpty()) {
+            for (String key : imageUrl) {
+                s3Uploader.delete(key);
+            }
         }
     }
 
@@ -89,6 +91,9 @@ public class PostService {
         if (!postRepository.existsById(id)) {
             throw new NoPostFoundException();
         }
+        PostEntity originPost = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다 id =" + id));
+        postS3ImageDelete(originPost.getImageUrl());
         postRepository.deleteById(id);
     }
 }

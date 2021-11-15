@@ -8,9 +8,11 @@ const Login = () => import("../views/user/Login.vue");
 const SignUp = () => import("../views/user/SignUp.vue");
 const EditUser = () => import("../views/user/EditUser.vue");
 const MyPage = () => import("../views/user/MyPage.vue");
+const FindByUser=()=>import("../views/user/FindByUser.vue");
 const PostCreate = () => import("../views/post/PostCreate");
 const PostDetail = () => import("../views/post/PostDetail");
 const PostUpdate = () => import("../views/post/PostUpdate");
+
 const routes = [
     {
         path     : "/",
@@ -32,6 +34,11 @@ const routes = [
         name     : "EditUser",
         component: EditUser,
         meta     : {authRequired: true},
+    },
+    {
+        path     : "/user/find",
+        name     : "FindByUser",
+        component: FindByUser,
     },
     {
         path     : "/mypage",

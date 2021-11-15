@@ -28,7 +28,9 @@
           ></v-textarea>
         </v-card-title>
         <v-card-subtitle>
-          <h4>Image를 올려주세요</h4>
+          <h4>
+            <span style="color: dodgerblue">[선택]</span> 이미지를 올려주세요
+          </h4>
         </v-card-subtitle>
         <input
           type="file"
@@ -167,8 +169,13 @@ export default {
       this.images.splice(key, 1);
     },
     allSubmit() {
-      if (this.images.length === undefined) {
-        alert("이미지가 없습니다 최소 한 장은 올려주세요");
+      if (
+        this.images === null ||
+        this.images.length === undefined ||
+        this.images.length === 0
+      ) {
+        this.images = null;
+        this.postObjectSend();
       } else {
         this.postImageSave();
       }
@@ -205,9 +212,7 @@ export default {
           headers: { Authorization: `Bearer ${this.$store.state.users.jwt}` },
         })
         .then(() => {
-          this.$router.push({
-            name: "MyPage",
-          });
+          this.$router.go(-1);
         })
         .catch(() => {
           alert("텍스트 형식으로 다시 작성 해주세요");
