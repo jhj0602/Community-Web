@@ -46,22 +46,32 @@ public class UserManagementService {
         userRepository.deleteById(id);
     }
 
-    public void update(UserUpdateDto userUpdateDto, MultipartFile profileImages) throws IOException {
+    public void update(UserUpdateDto userUpdateDto) {
         UserEntity updateUser = userUpdateDto.toUserEntity();
         UserEntity originUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(NoUserFoundException::new);
+        if (!originUser.getEmail().equals(userUpdateDto.getEmail())) {
+            validateDuplicatedEmail(userUpdateDto.getEmail());
+        }
+        userS3ProfileImageDelete(originUser.getProfileImage());
         UserEntity user = UserEntity.builder()
                 .id(updateUser.getId())
                 .email(updateUser.getEmail())
                 .password(passwordEncoder.encrypt(updateUser.getPassword()))
                 .nickname(updateUser.getNickname())
-                .profileImage((s3Uploader.upload(profileImages,"static")))
+                .profileImage(userUpdateDto.getProfileImage())
                 .authorities(originUser.getAuthorities())
+                .posts(originUser.getPosts())
                 .build();
-
-        if (!originUser.getEmail().equals(userUpdateDto.getEmail())) {
-            validateDuplicatedEmail(userUpdateDto.getEmail());
-        }
         userRepository.save(user);
+    }
+
+    public String userS3ImageSave(MultipartFile profileImage) throws IOException {
+        // return s3Uploader.upload(profileImage, "static");
+        return profileImage.getOriginalFilename();
+    }
+
+    public void userS3ProfileImageDelete(String profileImage) {
+        s3Uploader.delete(profileImage);
     }
 
     public void validateDuplicatedEmail(String email) {
