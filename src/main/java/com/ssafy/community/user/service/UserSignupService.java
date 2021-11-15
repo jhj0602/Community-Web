@@ -23,10 +23,9 @@ public class UserSignupService {
     private final AuthorityRepository authorityRepository;
     private final UserAuthorityRepository userAuthorityRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final S3Uploader s3Uploader;
 
     @Transactional
-    public UserResponseDto save(UserSignupDto userSignupDto, MultipartFile profileImages) throws Exception {
+    public UserResponseDto save(UserSignupDto userSignupDto) throws Exception {
         if (!validateDuplicatedEmail(userSignupDto.getEmail())) {
             throw new DuplicatedEmailException();
         }
@@ -35,7 +34,7 @@ public class UserSignupService {
                 .email(signupUser.getEmail())
                 .password(passwordEncoder.encrypt(signupUser.getPassword()))
                 .nickname(signupUser.getNickname())
-                .profileImage(s3Uploader.upload(profileImages, "static"))
+                .profileImage(userSignupDto.getProfileImage())
                 .authorities(signupUser.getAuthorities())
                 .build();
 
