@@ -49,8 +49,8 @@ public class PostService {
         List<String> postImages = new ArrayList<>();
         if (!images.isEmpty()) {
             for (MultipartFile image : images) {
-//                postImages.add(s3Uploader.upload(image, "static"));
-              postImages.add(image.getOriginalFilename());
+                postImages.add(s3Uploader.upload(image, "static"));
+                //           postImages.add(image.getOriginalFilename());
             }
         }
         return postImages;

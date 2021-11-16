@@ -40,9 +40,8 @@ public class UserManagementService {
     }
 
     public void deleteById(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new NoUserFoundException();
-        }
+        UserEntity user = userRepository.findById(id).orElseThrow(NoUserFoundException::new);
+        userS3ProfileImageDelete(user.getProfileImage());
         userRepository.deleteById(id);
     }
 
@@ -66,8 +65,8 @@ public class UserManagementService {
     }
 
     public String userS3ImageSave(MultipartFile profileImage) throws IOException {
-        // return s3Uploader.upload(profileImage, "static");
-        return profileImage.getOriginalFilename();
+        return s3Uploader.upload(profileImage, "static");
+        // return profileImage.getOriginalFilename();
     }
 
     public void userS3ProfileImageDelete(String profileImage) {
