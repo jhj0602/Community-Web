@@ -2,62 +2,72 @@
   <div>
     <div>
       <v-card width="400" class="mx-auto mt-5">
-        <div class="purple darken-2 text-center">
+        <div class="purple darken-1 text-center">
           <v-card-title><span class="white--text">Login</span></v-card-title>
         </div>
         <v-card-text>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
-                v-model="email"
-                :rules="emailRules"
-                label="E-mail"
-                prepend-icon="mdi-account-circle"
-                required
+              v-model="email"
+              :rules="emailRules"
+              label="E-mail"
+              prepend-icon="mdi-account-circle"
+              required
             ></v-text-field>
             <v-text-field
-                v-model="password"
-                :counter="10"
-                :rules="passwordRules"
-                label="password"
-                prepend-icon="mdi-lock"
-                required
-                type="password"
+              v-model="password"
+              :counter="10"
+              :rules="passwordRules"
+              label="password"
+              prepend-icon="mdi-lock"
+              required
+              type="password"
             ></v-text-field>
           </v-form>
         </v-card-text>
-
         <v-card-actions>
           <v-btn
-              :disabled="!valid"
-              color="deep-purple accent-7"
-              class="mr-2 white--text"
-              @click="signIn"
+            :disabled="!valid"
+            color="deep-purple accent-1"
+            class="white--text block"
+            @click="signIn"
+            rounded
           >
-           Login
+            Login
           </v-btn>
-          <v-btn :to="{ name: 'SignUp' }" color="deep-purple accent-7" class="mr-2 white--text">
+        </v-card-actions>
+        <v-card-actions>
+          <v-btn
+            :to="{ name: 'SignUp' }"
+            color="deep-purple accent-2"
+            class="white--text block"
+            rounded
+          >
             Sign Up
           </v-btn>
+        </v-card-actions>
+        <v-card-actions>
           <v-btn
-              color="deep-purple accent-7"
-              class="mr-2 white--text"
-              :to="{ name: 'FindByUser' }"
+            color="deep-purple accent-3"
+            class="white--text block"
+            :to="{ name: 'FindByUser' }"
+            rounded
           >
             ID/PW 찾기
           </v-btn>
-
         </v-card-actions>
       </v-card>
     </div>
+    <br />
   </div>
 </template>
 <script>
-import {mapActions} from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   methods: {
-    ...mapActions({login: "users/login"}),
-    ...mapActions({detail: "users/details"}),
+    ...mapActions({ login: "users/login" }),
+    ...mapActions({ detail: "users/details" }),
     validate() {
       this.$refs.form.validate();
     },
@@ -66,29 +76,37 @@ export default {
     },
     async signIn() {
       let userSignupDto = {
-        email   : this.email,
+        email: this.email,
         password: this.password,
       };
       if (await this.login(userSignupDto)) {
         await this.detail(this.$store.state.users.id);
-        await this.$router.push({name: "Home"});
+        await this.$router.push({ name: "Home" });
       }
     },
   },
 
   data: () => ({
-    valid        : true,
-    password     : "",
+    valid: true,
+    password: "",
     passwordRules: [
       (v) => !!v || "password is required",
       (v) =>
-          (v && v.length <= 10) || "password must be less than 10 characters",
+        (v && v.length <= 10) || "password must be less than 10 characters",
     ],
-    email        : "",
-    emailRules   : [
+    email: "",
+    emailRules: [
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
   }),
 };
 </script>
+<style>
+.block {
+  display: block;
+  width: 100%;
+  border: none;
+  text-align: center;
+}
+</style>

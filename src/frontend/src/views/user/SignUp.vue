@@ -1,9 +1,9 @@
 <template>
   <div id="signUp">
     <v-card width="600" class="mx-auto mt-5">
-      <div class="purple darken-2 text-center">
-        <v-card-title>
-          <span class="white--text">Sign Up</span>
+      <div class="purple darken-1">
+        <v-card-title align="center">
+          <span class="white--text ">Sign Up</span>
         </v-card-title>
       </div>
       <div id="signUpForm">
@@ -22,8 +22,8 @@
                   :disabled="!email"
                   id="checkEmail"
                   elevation="1"
-                  color="deep-purple accent-7"
-                  class="mr-3 white--text"
+                  color="deep-purple accent-3"
+                  class="mr-3 white--text block"
                   @click="isDuplicatedEmail"
                 >
                   check
@@ -76,7 +76,7 @@
             <v-row>
               <v-col>
                 <v-card-subtitle>
-                  <h4>프로필 이미지 선택</h4>
+                  <h4><span style="color: dodgerblue">[선택] </span>프로필 이미지 선택</h4>
                 </v-card-subtitle>
                 <v-file-input
                   label="profile Image"
@@ -100,15 +100,17 @@
             !(nickname.length >= 2)
           "
           color="deep-purple accent-7"
-          class="mr-3 white--text"
+          class="mr-3 white--text block"
           @click="allSubmit"
         >
           Sign up
           <v-icon right>mdi-arrow-right-thick</v-icon>
         </v-btn>
+      </v-card-actions>
+        <v-card-actions>
         <v-btn
           color="deep-purple accent-7"
-          class="mr-4 white--text"
+          class="mr-4 white--text block"
           @click="$router.go(-1)"
         >
           Cancel
@@ -199,4 +201,16 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style>
+.block {
+  display: block;
+  width: 100%;
+  border: none;
+  background-color: #04aa6d;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+
+}
+</style>
