@@ -1,4 +1,4 @@
-package com.ssafy.community.time;
+package com.ssafy.community.common;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
