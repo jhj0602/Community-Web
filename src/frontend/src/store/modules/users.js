@@ -11,6 +11,7 @@ const state = {
   nickname: "로그인하세요.",
   modifiedDate:null,
   userList: [],
+  message:""
 };
 const mutations = {
   setJwt: (state, jwt) => {
@@ -49,7 +50,7 @@ const actions = {
         alert("로그인 되었습니다.");
       })
       .catch((error) => {
-        alert(error.response.data);
+        alert("ID나 PW가 존재하지 않습니다.");
         isSuccess = false;
       });
     return isSuccess;
@@ -77,7 +78,8 @@ const actions = {
         console.log(response);
       })
       .catch((error) => {
-        alert(error.response.data);
+        console.log(error)
+        alert("회원가입 실패! 입력값을 확인해주세요.");
         isSuccess = false;
       });
     return isSuccess;
@@ -125,7 +127,7 @@ const actions = {
         alert("계정을 삭제했습니다.");
       })
       .catch((error) => {
-        alert(error.response.data);
+        alert("계정을 삭제 할 수 업습니다");
         isSuccess = false;
       });
     return isSuccess;

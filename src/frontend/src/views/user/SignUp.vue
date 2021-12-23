@@ -19,7 +19,7 @@
                   required
                 ></v-text-field>
                 <v-btn
-                  :disabled="!email"
+                  v-model="emailCheck"
                   id="checkEmail"
                   elevation="1"
                   color="deep-purple accent-3"
@@ -134,6 +134,7 @@ export default {
       show1: false,
       show2: false,
       email: "",
+      emailCheck:false,
       password: "",
       passwordCheck: "",
       nickname: "",
@@ -183,7 +184,7 @@ export default {
           this.userObjectSend();
         })
         .catch((err) => {
-          alert(err.response.message);
+          alert(err.msg);
         });
     },
     async userObjectSend() {
