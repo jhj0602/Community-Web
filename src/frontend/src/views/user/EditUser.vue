@@ -158,7 +158,7 @@ export default {
           this.userObjectSend();
         })
         .catch((err) => {
-          alert(err.response.message);
+          alert(err.msg);
         });
     },
     async userObjectSend () {

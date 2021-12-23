@@ -45,19 +45,19 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/create/images")
+    public ResponseEntity<String> imageSave(@RequestParam("images")MultipartFile images) throws IOException {
+        return ResponseEntity.ok((userManagementService.userS3ImageSave(images)));
+    }
+
     @PutMapping("/update")
     @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<Void> update(@RequestBody @Valid UserUpdateDto userUpdateDto) {
         userManagementService.update(userUpdateDto);
         return new ResponseEntity(HttpStatus.OK);
     }
-    @PostMapping("/create/images")
-    public ResponseEntity<String> imageSave(@RequestParam("images")MultipartFile images) throws IOException {
-        return ResponseEntity.ok((userManagementService.userS3ImageSave(images)));
-    }
 
     @GetMapping("/{id}/details")
-    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<UserResponseDto> details(@PathVariable Long id) {
         UserResponseDto userDetails = userManagementService.findById(id);
         return new ResponseEntity(userDetails, HttpStatus.OK);
