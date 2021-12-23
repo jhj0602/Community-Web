@@ -2,7 +2,7 @@ package com.ssafy.community.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.community.post.entity.PostEntity;
-import com.ssafy.community.time.BaseTimeEntity;
+import com.ssafy.community.common.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
