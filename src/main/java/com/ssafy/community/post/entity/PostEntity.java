@@ -1,7 +1,7 @@
 package com.ssafy.community.post.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.ssafy.community.time.BaseTimeEntity;
+import com.ssafy.community.common.BaseTimeEntity;
 import com.ssafy.community.user.entity.UserEntity;
 import lombok.*;
 
