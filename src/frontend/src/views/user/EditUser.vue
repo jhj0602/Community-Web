@@ -137,38 +137,16 @@ export default {
     ...mapActions({ getUser: "users/details" }),
 
     allSubmit() {
-      if (
-        this.profile_pic === null ||
-        this.profile_pic === undefined ||
-        this.profile_pic.length === 0
-      ) {
-        this.profileImage = "";
-        this.userObjectSend();
-      } else {
-        this.userImageSave();
-      }
+      this.userObjectSend();
     },
-    userImageSave() {
-      let frmUploadImage = new FormData();
-      frmUploadImage.append("images", this.profile_pic);
-      axios
-        .post("/api/users/create/images", frmUploadImage)
-        .then((res) => {
-          this.profileImage = res.data;
-          this.userObjectSend();
-        })
-        .catch((err) => {
-          alert(err.msg);
-        });
-    },
-    async userObjectSend () {
+
+    async userObjectSend() {
       const userUpdateDto = {
         id: this.$store.state.users.details.id,
         email: this.email,
         password: this.password,
         passwordCheck: this.passwordCheck,
         nickname: this.nickname,
-        profileImage: this.profileImage,
       };
       if (await this.updateUser(userUpdateDto)) {
         await this.$router.push({ name: "Login" });
