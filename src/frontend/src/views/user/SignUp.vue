@@ -3,7 +3,7 @@
     <v-card width="600" class="mx-auto mt-5">
       <div class="purple darken-1">
         <v-card-title align="center">
-          <span class="white--text ">Sign Up</span>
+          <span class="white--text">Sign Up</span>
         </v-card-title>
       </div>
       <div id="signUpForm">
@@ -73,20 +73,6 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col>
-                <v-card-subtitle>
-                  <h4><span style="color: dodgerblue">[선택] </span>프로필 이미지 선택</h4>
-                </v-card-subtitle>
-                <v-file-input
-                  label="profile Image"
-                  filled
-                  prepend-icon="mdi-camera"
-                  accept=".jpg, .jpeg, .png"
-                  v-model="profile_pic"
-                ></v-file-input>
-              </v-col>
-            </v-row>
           </v-container>
         </v-form>
       </div>
@@ -107,7 +93,7 @@
           <v-icon right>mdi-arrow-right-thick</v-icon>
         </v-btn>
       </v-card-actions>
-        <v-card-actions>
+      <v-card-actions>
         <v-btn
           color="deep-purple accent-7"
           class="mr-4 white--text block"
@@ -134,12 +120,10 @@ export default {
       show1: false,
       show2: false,
       email: "",
-      emailCheck:false,
+      emailCheck: false,
       password: "",
       passwordCheck: "",
       nickname: "",
-      profile_pic: [],
-      profileImage: "",
       rules: {
         required: (input) => !!input || "Required.",
         validateEmailType: (email) =>
@@ -153,7 +137,6 @@ export default {
         pwCheck: (passwordCheck) =>
           this.password === passwordCheck || "Password mismatch",
       },
-
     };
   },
   methods: {
@@ -163,29 +146,7 @@ export default {
       this.duplicateEmail(this.email);
     },
     allSubmit() {
-      if (
-        this.profile_pic === null ||
-        this.profile_pic === undefined ||
-        this.profile_pic.length === 0
-      ) {
-        this.profileImage = "";
-        this.userObjectSend();
-      } else {
-        this.userImageSave();
-      }
-    },
-    userImageSave() {
-      let frmUploadImage = new FormData();
-      frmUploadImage.append("images", this.profile_pic);
-      axios
-        .post("/api/users/create/images", frmUploadImage)
-        .then((res) => {
-          this.profileImage = res.data;
-          this.userObjectSend();
-        })
-        .catch((err) => {
-          alert(err.msg);
-        });
+      this.userObjectSend();
     },
     async userObjectSend() {
       const userSignupDto = {
@@ -193,7 +154,6 @@ export default {
         password: this.password,
         passwordCheck: this.passwordCheck,
         nickname: this.nickname,
-        profileImage: this.profileImage,
       };
       if (await this.signup(userSignupDto)) {
         await this.$router.push({ name: "Login" });
@@ -212,6 +172,5 @@ export default {
   font-size: 16px;
   cursor: pointer;
   text-align: center;
-
 }
 </style>
