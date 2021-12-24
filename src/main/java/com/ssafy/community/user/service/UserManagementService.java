@@ -12,17 +12,20 @@ import com.ssafy.community.user.exception.NoUserFoundException;
 import com.ssafy.community.user.exception.UnmatchedPasswordCheckException;
 import com.ssafy.community.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserManagementService {
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
@@ -44,24 +47,14 @@ public class UserManagementService {
         userS3ProfileImageDelete(user.getProfileImage());
         userRepository.deleteById(id);
     }
-
-    public void update(UserUpdateDto userUpdateDto) {
-        UserEntity updateUser = userUpdateDto.toUserEntity();
+    @Transactional
+    public Long update(UserUpdateDto userUpdateDto) {
         UserEntity originUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(NoUserFoundException::new);
         if (!originUser.getEmail().equals(userUpdateDto.getEmail())) {
             validateDuplicatedEmail(userUpdateDto.getEmail());
         }
-        userS3ProfileImageDelete(originUser.getProfileImage());
-        UserEntity user = UserEntity.builder()
-                .id(updateUser.getId())
-                .email(updateUser.getEmail())
-                .password(passwordEncoder.encrypt(updateUser.getPassword()))
-                .nickname(updateUser.getNickname())
-                .profileImage(userUpdateDto.getProfileImage())
-                .authorities(originUser.getAuthorities())
-                .posts(originUser.getPosts())
-                .build();
-        userRepository.save(user);
+        originUser.updateUser(userUpdateDto.getNickname(),passwordEncoder.encrypt(userUpdateDto.getPassword()));
+        return originUser.getId();
     }
 
     public String userS3ImageSave(MultipartFile profileImage) throws IOException {
