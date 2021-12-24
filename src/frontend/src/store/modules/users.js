@@ -75,10 +75,8 @@ const actions = {
       .post(`${config.baseUrl}`, userSignupDto)
       .then((response) => {
         alert("회원가입 성공!");
-        console.log(response);
       })
       .catch((error) => {
-        console.log(error)
         alert("회원가입 실패! 입력값을 확인해주세요.");
         isSuccess = false;
       });
