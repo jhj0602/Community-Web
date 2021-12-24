@@ -1,6 +1,5 @@
 package com.ssafy.community.user.service;
 
-import com.ssafy.community.image.service.S3Uploader;
 import com.ssafy.community.user.dto.UserResponseDto;
 import com.ssafy.community.user.dto.UserSignupDto;
 import com.ssafy.community.user.encoder.BCryptPasswordEncoder;
@@ -14,7 +13,6 @@ import com.ssafy.community.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
