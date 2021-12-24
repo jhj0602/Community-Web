@@ -3,6 +3,7 @@ package com.ssafy.community.user.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.community.post.entity.PostEntity;
 import com.ssafy.community.common.BaseTimeEntity;
+import com.ssafy.community.user.dto.UserUpdateDto;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -44,4 +45,9 @@ public class UserEntity extends BaseTimeEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonManagedReference
     private List<PostEntity> posts;
+
+    public void updateUser(String nickname, String password) {
+        this.password =password;
+        this.nickname=nickname;
+    }
 }
