@@ -88,9 +88,6 @@ public class PostService {
     }
 
     public void deleteById(Long id) {
-        if (!postRepository.existsById(id)) {
-            throw new NoPostFoundException();
-        }
         PostEntity originPost = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다 id =" + id));
         postS3ImageDelete(originPost.getImageUrl());
