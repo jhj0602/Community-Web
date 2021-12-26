@@ -65,7 +65,6 @@ public class S3Uploader {
         log.info("File delete fail");
     }
 
-    // 로컬에 파일 업로드 하기
     private Optional<File> convert(MultipartFile file) throws IOException {
         log.info("upload s3 convert");
         File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
