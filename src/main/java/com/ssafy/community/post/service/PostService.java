@@ -64,24 +64,18 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto update(PostUpdateRequestDto postUpdateRequestDto) {
-        PostEntity updatePost = postUpdateRequestDto.toUpdatePostEntity();
+    public Long update(PostUpdateRequestDto postUpdateRequestDto) {
         PostEntity originPost = postRepository.findById(postUpdateRequestDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다 id =" + updatePost.getId()));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다 id =" + postUpdateRequestDto.getId()));
         postS3ImageDelete(originPost.getImageUrl());
-        PostEntity postEntity = PostEntity.builder()
-                .id(updatePost.getId())
-                .title(updatePost.getTitle())
-                .content(updatePost.getContent())
-                .imageUrl(updatePost.getImageUrl())
-                .user(originPost.getUser())
-                .build();
-        return PostResponseDto.from(postRepository.save(postEntity));
+        originPost.update(postUpdateRequestDto);
+        return originPost.getId();
     }
 
     public void postS3ImageDelete(List<String> imageUrl) {
         if (!imageUrl.isEmpty()) {
             for (String key : imageUrl) {
+                log.info("service"+imageUrl);
                 s3Uploader.delete(key);
             }
         }

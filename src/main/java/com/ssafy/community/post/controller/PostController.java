@@ -55,8 +55,7 @@ public class PostController {
     @PutMapping("/update")
     @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
     public ResponseEntity<String> update(@RequestBody PostUpdateRequestDto postUpdateRequestDto) {
-        PostResponseDto postResponseDto = postService.update(postUpdateRequestDto);
-        return ResponseEntity.created(URI.create("/" + postResponseDto.getId()))
+        return ResponseEntity.created(URI.create("/" +postService.update(postUpdateRequestDto)))
                 .build();
     }
 

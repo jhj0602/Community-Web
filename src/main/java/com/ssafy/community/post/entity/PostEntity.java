@@ -2,6 +2,7 @@ package com.ssafy.community.post.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.community.common.BaseTimeEntity;
+import com.ssafy.community.post.dto.PostUpdateRequestDto;
 import com.ssafy.community.user.entity.UserEntity;
 import lombok.*;
 
@@ -35,4 +36,10 @@ public class PostEntity  extends BaseTimeEntity {
     @CollectionTable(name = "post_image", joinColumns = @JoinColumn(name = "post_id"))
     @JsonBackReference
     private List<String> imageUrl;
+
+    public void update(PostUpdateRequestDto updateDto) {
+        this.title =updateDto.getTitle();
+        this.content=updateDto.getContent();
+        this.imageUrl=updateDto.getImageUrl();
+    }
 }
