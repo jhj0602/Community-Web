@@ -17,17 +17,8 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
-    private final AuthInterceptor authInterceptor;
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        log.info("addResourceHandlers");
-        for (StaticResourcePath path : StaticResourcePath.values()) {
-            ResourceHandlerRegistration resourceHandlerRegistration = registry.addResourceHandler(path.getPath());
-            resourceHandlerRegistration.addResourceLocations("classpath:/static/" + path.getDirectory() + "/")
-                    .setCacheControl(CacheControl.maxAge(60L * 60L * 24L * 365L, TimeUnit.SECONDS).cachePublic());
-        }
-    }
+    private final AuthInterceptor authInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
