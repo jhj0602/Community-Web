@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
@@ -73,9 +74,8 @@ public class PostService {
     }
 
     public void postS3ImageDelete(List<String> imageUrl) {
-        if (!imageUrl.isEmpty()) {
+        if (!imageUrl.isEmpty()||imageUrl!=null) {
             for (String key : imageUrl) {
-                log.info("service"+imageUrl);
                 s3Uploader.delete(key);
             }
         }
