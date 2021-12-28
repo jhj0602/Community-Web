@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -47,23 +48,29 @@ public class UserManagementService {
         userS3ProfileImageDelete(user.getProfileImage());
         userRepository.deleteById(id);
     }
+
     @Transactional
     public Long update(UserUpdateDto userUpdateDto) {
         UserEntity originUser = userRepository.findById(userUpdateDto.getId()).orElseThrow(NoUserFoundException::new);
         if (!originUser.getEmail().equals(userUpdateDto.getEmail())) {
             validateDuplicatedEmail(userUpdateDto.getEmail());
         }
-        originUser.updateUser(userUpdateDto.getNickname(),passwordEncoder.encrypt(userUpdateDto.getPassword()));
+        originUser.updateUser(userUpdateDto.getNickname(), passwordEncoder.encrypt(userUpdateDto.getPassword()));
         return originUser.getId();
     }
 
-    public String userS3ImageSave(MultipartFile profileImage) throws IOException {
-        return s3Uploader.upload(profileImage, "static");
-        // return profileImage.getOriginalFilename();
+    @Transactional
+    public Long profileImageSave(Long id, MultipartFile profileImage) throws IOException {
+        UserEntity originUser = userRepository.findById(id).orElseThrow(NoUserFoundException::new);
+        userS3ProfileImageDelete(originUser.getProfileImage());
+        originUser.updateProfile(s3Uploader.upload(profileImage, "static"));
+        return originUser.getId();
     }
 
     public void userS3ProfileImageDelete(String profileImage) {
-        s3Uploader.delete(profileImage);
+        if (!profileImage.isEmpty()||profileImage!=null) {
+            s3Uploader.delete(profileImage);
+        }
     }
 
     public void validateDuplicatedEmail(String email) {

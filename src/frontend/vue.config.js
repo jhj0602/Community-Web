@@ -14,4 +14,5 @@ module.exports = {
     port: 9000,
   },
   outputDir: path.resolve("__dirname", "../../main/resources/static"),
+
 };

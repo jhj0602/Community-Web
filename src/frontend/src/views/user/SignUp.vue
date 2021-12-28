@@ -12,6 +12,7 @@
             <v-row>
               <v-col>
                 <v-text-field
+                  solo
                   v-model="email"
                   :rules="[rules.required, rules.validateEmailType]"
                   label="Email address"
@@ -33,6 +34,7 @@
             <v-row>
               <v-col>
                 <v-text-field
+                  solo
                   v-model="password"
                   :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                   :rules="[rules.required, rules.minPw]"
@@ -49,6 +51,7 @@
             <v-row>
               <v-col>
                 <v-text-field
+                  solo
                   v-model="passwordCheck"
                   :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                   :rules="[rules.required, rules.minPw, rules.pwCheck]"
@@ -65,6 +68,7 @@
             <v-row>
               <v-col>
                 <v-text-field
+                  solo
                   v-model="nickname"
                   :rules="[rules.minName]"
                   label="Nickname"
@@ -104,16 +108,10 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-    <br />
-    <br />
-    <br />
-    <br />
   </div>
 </template>
 <script>
 import { mapActions } from "vuex";
-import axios from "axios";
-
 export default {
   data() {
     return {

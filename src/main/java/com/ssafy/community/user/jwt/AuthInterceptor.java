@@ -1,11 +1,11 @@
 package com.ssafy.community.user.jwt;
 
-
 import com.ssafy.community.user.annotation.AnnotationHandler;
 import com.ssafy.community.user.annotation.PreAuthorize;
 import com.ssafy.community.user.exception.NoTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -30,6 +30,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) {
+        if (!(handler instanceof HandlerMethod)) {
+            return true;
+        }
         HandlerMethod method = (HandlerMethod) handler;
         Optional<PreAuthorize> preAuthorize = getPreAuthorize(method);
         Optional<String> jwt = resolveToken(request);

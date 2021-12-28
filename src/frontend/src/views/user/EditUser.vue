@@ -1,9 +1,50 @@
 <template>
   <div id="signUp">
     <v-card width="400" class="mx-auto mt-5">
-      <v-card-title class="purple darken-2 text-center">
-        <h3 style="color: white">Edit User</h3>
+      <v-card-title>
+        <h3>회원 정보 수정</h3>
       </v-card-title>
+      <v-card
+        class="d-flex justify-center mb-6"
+        :color="$vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-4'"
+        flat
+        tile
+      >
+        <v-col>
+          <v-avatar
+            class="profile"
+            size="170"
+            v-if="
+              this.$store.state.users.profileImage == null ||
+              !this.$store.state.users.profileImage
+            "
+          >
+            <v-img src="@/assets/default_profile.png"></v-img>
+          </v-avatar>
+          <v-avatar class="profile" size="170" v-else>
+            <v-img
+              v-bind:src="
+                this.$store.state.users.profileImage | loadImgOrPlaceholder
+              "
+              alt="@/assets/default_profile.png"
+            ></v-img>
+          </v-avatar>
+        </v-col>
+        <v-col>
+          <v-card-subtitle>
+            <h4>프로필 이미지 선택 [1장]</h4>
+          </v-card-subtitle>
+          <v-file-input
+            label="profile Image"
+            filled
+            prepend-icon="mdi-camera"
+            accept=".jpg, .jpeg, .png"
+            v-model="profile_pic"
+          ></v-file-input>
+          <v-btn @click="postProfile">프로필 사진 등록</v-btn>
+        </v-col>
+      </v-card>
+
       <v-card-text>
         <div id="signUpForm">
           <v-form>
@@ -11,6 +52,7 @@
               <v-row>
                 <v-col>
                   <v-text-field
+                    solo
                     v-model="email"
                     :rules="[rules.required]"
                     label="Email address"
@@ -23,6 +65,7 @@
               <v-row>
                 <v-col>
                   <v-text-field
+                    solo
                     v-model="password"
                     :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                     :rules="[rules.required, rules.minPw]"
@@ -39,6 +82,7 @@
               <v-row>
                 <v-col>
                   <v-text-field
+                    solo
                     v-model="passwordCheck"
                     :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
                     :rules="[rules.required, rules.minPw, rules.pwCheck]"
@@ -52,30 +96,16 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-
               <v-row>
                 <v-col>
                   <v-text-field
+                    solo
                     v-model="nickname"
                     :rules="[rules.minName]"
                     label="Edit Nickname"
                     prepend-icon="mdi-account"
                     required
                   ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row
-                ><v-col>
-                  <v-card-subtitle>
-                    <h4>프로필 이미지 선택</h4>
-                  </v-card-subtitle>
-                  <v-file-input
-                    label="profile Image"
-                    filled
-                    prepend-icon="mdi-camera"
-                    accept=".jpg, .jpeg, .png"
-                    v-model="profile_pic"
-                  ></v-file-input>
                 </v-col>
               </v-row>
             </v-container>
@@ -100,13 +130,16 @@
         </v-btn>
       </v-card-actions>
     </v-card>
+    <br />
+    <br />
   </div>
 </template>
 <script>
 import { mapActions } from "vuex";
-import axios from "axios";
+import myMixin from "@/filter";
 
 export default {
+  mixins: [myMixin],
   data() {
     return {
       show1: false,
@@ -114,9 +147,9 @@ export default {
       email: this.$store.state.users.details.email,
       password: "",
       passwordCheck: "",
-      nickname: "",
+      nickname: this.$store.state.users.details.nickname,
       valid: true,
-      profile_pic: null,
+      profile_pic: undefined,
       profileImage: "",
       rules: {
         required: (input) => !!input || "Required.",
@@ -135,6 +168,7 @@ export default {
     ...mapActions({ delUser: "users/deleteUser" }),
     ...mapActions({ logout: "users/logout" }),
     ...mapActions({ getUser: "users/details" }),
+    ...mapActions({ postProfileImage: "users/profileImageSave" }),
 
     allSubmit() {
       this.userObjectSend();
@@ -162,6 +196,17 @@ export default {
     },
     getUserDetails: function () {
       this.getUser(this.$store.state.users.id);
+    },
+    async postProfile() {
+      if (this.profile_pic == undefined) {
+        alert("이미지를 업로드 해주세요");
+      }
+      let formData = new FormData();
+      formData.append("id", this.$store.state.users.id);
+      formData.append("profileImage", this.profile_pic);
+      if (await this.postProfileImage(formData)) {
+        await this.$router.push({ name: "MyPage" });
+      }
     },
   },
 };

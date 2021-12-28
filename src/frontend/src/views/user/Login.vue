@@ -1,9 +1,9 @@
 <template>
   <div>
     <div>
-      <v-card width="400" class="mx-auto mt-5">
-        <div class="purple darken-1 text-center">
-          <v-card-title><span class="white--text">Login</span></v-card-title>
+      <v-card width="400" class="mx-auto mt-5" >
+        <div  style="background-color: #1F7085" >
+          <v-card-title ><span class="white--text">Login</span></v-card-title>
         </div>
         <v-card-text>
           <v-form ref="form" v-model="valid" lazy-validation>
@@ -28,7 +28,7 @@
         <v-card-actions>
           <v-btn
             :disabled="!valid"
-            color="deep-purple accent-1"
+            color="pink darken-1"
             class="white--text block"
             @click="signIn"
             rounded
@@ -39,7 +39,7 @@
         <v-card-actions>
           <v-btn
             :to="{ name: 'SignUp' }"
-            color="deep-purple accent-2"
+            color="pink darken-3"
             class="white--text block"
             rounded
           >
@@ -48,7 +48,7 @@
         </v-card-actions>
         <v-card-actions>
           <v-btn
-            color="deep-purple accent-3"
+            color="pink darken-4"
             class="white--text block"
             :to="{ name: 'FindByUser' }"
             rounded
