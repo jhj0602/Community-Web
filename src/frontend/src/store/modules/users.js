@@ -146,7 +146,6 @@ const actions = {
   },
 
   async update({ commit }, userUpdateDto) {
-    console.log(userUpdateDto)
     let isSuccess = true;
     await axios
       .put(`${config.baseUrl}update`, userUpdateDto, {
@@ -157,9 +156,28 @@ const actions = {
         commit("logout");
       })
       .catch((error) => {
-        alert("계정을 수정하지 못했습니다.  code : "+error.response.status);
+        alert("계정을 수정하지 못했습니다. 입력값을 확인해주세요");
         isSuccess = false;
       });
+    return isSuccess;
+  },
+  
+  async profileImageSave({ commit },formData) {
+    console.log("save")
+    let isSuccess = true;
+    await axios
+        .post(`${config.baseUrl}/profile/image`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${state.jwt}` },
+        })
+        .then(() => {
+          alert("프로필사진 수정완료!");
+        })
+        .catch((error) => {
+          alert("프로필사진을 수정하지 못했습니다.");
+          isSuccess = false;
+        });
     return isSuccess;
   },
   async findAll({ commit }) {

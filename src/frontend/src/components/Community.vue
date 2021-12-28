@@ -1,17 +1,13 @@
 <template>
   <v-container>
     <div v-for="(item, i) in listData" :key="`item-${i}`">
-      <v-card
-        max-width="400"
-        class="mx-auto purple darken-1"
-
-      >
+      <v-card max-width="400" class="mx-auto l" style="background: #1F7085">
         <v-list-item three-line>
           <v-list-item-avatar>
             <div
               v-if="item.writerProfileImage == null || !item.writerProfileImage"
             >
-              <v-avatar size="50px" color="grey">
+              <v-avatar size="50px">
                 <v-img src="@/assets/default_profile.png"></v-img>
               </v-avatar>
             </div>
@@ -21,8 +17,9 @@
                   v-bind:src="item.writerProfileImage | loadImgOrPlaceholder"
                   alt="@/assets/default_profile.png"
                 ></v-img>
-              </v-avatar></div
-          ></v-list-item-avatar>
+              </v-avatar>
+            </div>
+          </v-list-item-avatar>
           <v-list-item-content style="color: whitesmoke">
             <div class="text-overline mb-0">{{ item.writer }}</div>
             <div class="text-overline mb-0">
@@ -32,15 +29,15 @@
         </v-list-item>
         <v-expansion-panels style="outline: 0">
           <v-expansion-panel>
-            <v-expansion-panel-header>{{
-              item.title
-            }}</v-expansion-panel-header>
+            <v-expansion-panel-header
+              >{{ item.title }}
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
               {{ item.content }}
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <div v-if="item.postImageUrl.length!==0">
+        <div v-if="item.postImageUrl.length !== 0">
           <v-carousel
             hide-delimiter-background
             delimiter-icon="mdi-minus"
@@ -70,13 +67,14 @@
       </v-card>
       <br />
     </div>
-    <br />
+
   </v-container>
 </template>
 
 <script>
 import axios from "axios";
 import myMixin from "@/filter";
+
 export default {
   mixins: [myMixin],
   name: "Community",
