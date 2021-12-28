@@ -45,9 +45,10 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping("/create/images")
-    public ResponseEntity<String> imageSave(@RequestParam("images")MultipartFile images) throws IOException {
-        return ResponseEntity.ok((userManagementService.userS3ImageSave(images)));
+    @PostMapping("/profile/image")
+    @PreAuthorize(roles = {"ROLE_ADMIN", "ROLE_USER"})
+    public ResponseEntity<Long> profileImageSave(@RequestParam("id") Long id,@RequestParam("profileImage")MultipartFile profileImage) throws IOException {
+        return new ResponseEntity((userManagementService.profileImageSave(id,profileImage)),HttpStatus.OK);
     }
 
     @PutMapping("/update")
